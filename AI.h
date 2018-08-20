@@ -14,14 +14,16 @@ will be stored in this class.
 class AI
 {
 public:
+	// Pubic functions
 	AI();
 	~AI();
 	void CreatePiece(Player &p);
-	char GetPiece();
 	void ReadBoard(char **arr);
 	void MakeMove(string board);
 	void MakeAIBoard(string board);
 
+	// Getters
+	char GetPiece();
 	char GetCurrentMove1();
 	char GetCurrentMove2();
 
@@ -38,8 +40,8 @@ private:
 	bool CheckVerticle();
 	bool CheckLeftDiagnol();
 	bool CheckRightDiagnol();
+	void EducatedMove();
 
-	void RandomMove();
 };
 
 #endif
