@@ -26,10 +26,6 @@ Board::~Board()
 {
 }
 
-void Board::CreateBoard() {
-
-}
-
 // Prints the current board
 void Board::PrintBoard() {
 	for (int i = 0; i < 3; i++) {
@@ -43,6 +39,11 @@ void Board::PrintBoard() {
 
 // Function for checking if a move the player entered is being placed on an empty spot on the board or not
 bool Board::CheckMove(int move1, int move2, char piece) {
+
+	// If the player hasn't made a move yet, just return false
+	if (move1 == -2 && move2 == -2) {
+		return false;
+	}
 	// If it is a blank spot, put the piece there
 	if (board[move1][move2] == '*') {
 		AddMove(move1, move2, piece);
@@ -55,13 +56,49 @@ bool Board::CheckMove(int move1, int move2, char piece) {
 	}
 }
 
+// Checks to see if either the player or the ai won the game. Checks horizontally for wins, checks vertically
+char Board::GameWon(char playerPiece, char aiPiece) {
+
+	if (CheckHorizontal() == playerPiece || CheckVerticle() == playerPiece || CheckLeftDiagnol() == playerPiece || CheckRightDiagnol() == playerPiece) {
+		cout << "You won! I should have made the AI harder." << endl;
+		return true;
+	}
+	else if (CheckHorizontal() == aiPiece || CheckVerticle() == aiPiece || CheckLeftDiagnol() == aiPiece || CheckRightDiagnol() == aiPiece) {
+		cout << "The ai won. Try harder next time." << endl;
+		return true;
+	}
+	else if (CheckTie()) {
+		cout << "The game is a tie! You both are too good." << endl;
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
+// Returns the entire board in the form of a string seperated by commas to be parsed by another function in another class
+// That way another class can't modify the original board
+string Board::GetBoard() {
+	string fullBoard;
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			fullBoard += board[i][j];
+			fullBoard += ',';
+		}
+	}
+
+	return fullBoard;
+}
+
 // After validating that a move is correct, this function adds it to the board
 void Board::AddMove(int move1, int move2, char piece) {
 	board[move1][move2] = tolower(piece);
+	PrintBoard();
 }
 
-// Checks to see if either the player or the ai won the game. Checks horizontally for wins, checks vertically
-char Board::GameWon() {
+char Board::CheckHorizontal() {
 	int xCount = 0;
 	int oCount = 0;
 
@@ -86,6 +123,11 @@ char Board::GameWon() {
 		xCount = 0;
 		oCount = 0;
 	}
+	return 'a';
+}
+char Board::CheckVerticle() {
+	int xCount = 0;
+	int oCount = 0;
 
 	// Checks for any vertical wins
 	for (int i = 0; i < 3; i++) {
@@ -108,8 +150,13 @@ char Board::GameWon() {
 		xCount = 0;
 		oCount = 0;
 	}
-
+	return 'a';
+}
+char Board::CheckLeftDiagnol() {
 	int secondI = 0;
+	int xCount = 0;
+	int oCount = 0;
+
 	// Checking for diagnol wins going from top left to bottom right
 	for (int i = 0; i < 3; i++) {
 		if (board[i][secondI] == 'x') {
@@ -128,11 +175,14 @@ char Board::GameWon() {
 	if (oCount == 3) {
 		return 'o';
 	}
-
+	return 'a';
+}
+char Board::CheckRightDiagnol() {
 	// Checking for diagnol wins going from top right to bottom left
-	secondI = 2;
-	xCount = 0;
-	oCount = 0;
+	int secondI = 2;
+	int xCount = 0;
+	int oCount = 0;
+
 	for (int i = 0; i < 3; i++) {
 		if (board[i][secondI] == 'x') {
 			xCount++;
@@ -150,18 +200,25 @@ char Board::GameWon() {
 	if (oCount == 3) {
 		return 'o';
 	}
-
+	return 'a';
 }
 
-string Board::GetBoard() {
-	string fullBoard;
+bool Board::CheckTie() {
+
+	int occupied = 0;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			fullBoard += board[i][j];
-			fullBoard += ',';
+			if (board[i][j] == 'x' || board[i][j] == 'o') {
+				occupied++;
+			}
 		}
 	}
 
-	return fullBoard;
+	if (occupied == 9) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

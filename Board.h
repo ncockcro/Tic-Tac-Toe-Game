@@ -22,11 +22,11 @@ public:
 	// Public functions
 	Board();
 	~Board();
-	void CreateBoard();
 	void PrintBoard();
 	bool CheckMove(int move1, int move2, char piece);
-	char GameWon();
+	char GameWon(char playerPiece, char aiPiece);
 
+	// Getters
 	string GetBoard();
 
 // Private variables
@@ -36,6 +36,11 @@ private:
 
 	// Private functions
 	void AddMove(int move1, int move2, char piece);
+	char CheckHorizontal();
+	char CheckVerticle();
+	char CheckLeftDiagnol();
+	char CheckRightDiagnol();
+	bool CheckTie();
 };
 
 #endif
