@@ -14,7 +14,8 @@ using namespace std;
 
 // Default constructor
 Player::Player() {
-
+	currentMove1 = -2;
+	currentMove2 = -2;
 }
 
 // Default destructor
@@ -55,15 +56,17 @@ char Player::GetPiece() {
 }
 
 // Prompts the user to make a move and have them enter the coordinates of where they want there piece to be
-void Player::MakeMove() {
+bool Player::MakeMove() {
 	string temp;
 
 	cout << "Enter where you want to place " << userPiece << " in the form (#,#). Type 'q' to quit: ";
 	cin >> temp;
 
 	if (temp == "q") {
+		cout << "The player quits." << endl;
+		exit(1);
 		currentMove1 = -1;
-		return;
+		return true;
 	}
 
 	// If the user types in a valid move, we will parse it as normal and store the coordinates
@@ -82,6 +85,11 @@ void Player::MakeMove() {
 				currentMove2 = stoi(token);
 			}
 		}
+		return true;
+	}
+	else {
+		cout << "Error: Incorrect position. Pick a spot in the form (#,#)." << endl;
+		return false;
 	}
 	
 }
@@ -94,7 +102,6 @@ bool Player::CheckMove(string temp) {
 	int count = 0;
 
 	while (getline(ss, token, ',')) {
-		cout << token << endl;
 		if (IsDigits(token)) {
 			if (stoi(token) > -1 && stoi(token) < 3) {
 				count++;

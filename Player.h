@@ -17,11 +17,12 @@ using namespace std;
 class Player
 {
 public:
+	// Public functions
 	Player();
 	~Player();
 	void PickPiece();
 	bool CheckPiece(char piece);
-	void MakeMove();
+	bool MakeMove();
 	bool CheckMove(string temp);
 	bool IsDigits(string &num);
 
@@ -31,6 +32,7 @@ public:
 	int GetCurrentMove2();
 
 private:
+	// Private variables
 	char userPiece;
 	int currentMove1;
 	int currentMove2;
