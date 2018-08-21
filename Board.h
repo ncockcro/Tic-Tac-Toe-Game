@@ -21,7 +21,6 @@ class Board {
 public:
 	// Public functions
 	Board();
-	~Board();
 	void PrintBoard();
 	bool CheckMove(int move1, int move2, char piece);
 	char GameWon(char playerPiece, char aiPiece);
@@ -36,6 +35,7 @@ private:
 
 	// Private functions
 	void AddMove(int move1, int move2, char piece);
+	char CheckAll(char playerPiece, char aiPiece);
 	char CheckHorizontal();
 	char CheckVerticle();
 	char CheckLeftDiagnol();

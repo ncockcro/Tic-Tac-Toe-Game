@@ -10,7 +10,10 @@ the player.
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,7 +22,6 @@ class Player
 public:
 	// Public functions
 	Player();
-	~Player();
 	void PickPiece();
 	bool CheckPiece(char piece);
 	bool MakeMove();

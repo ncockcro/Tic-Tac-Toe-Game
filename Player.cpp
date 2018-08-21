@@ -5,22 +5,11 @@ Date: August 12, 2018
 
 */
 #include "Player.h"
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <algorithm>
-
-using namespace std;
 
 // Default constructor
 Player::Player() {
 	currentMove1 = -2;
 	currentMove2 = -2;
-}
-
-// Default destructor
-Player::~Player() {
-
 }
 
 // Prompts the user to pick a piece at the start of the program, either "X" or "O" and will then assign

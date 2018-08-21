@@ -21,11 +21,6 @@ Board::Board()
 	}
 }
 
-// Default destructor for the board class
-Board::~Board()
-{
-}
-
 // Prints the current board
 void Board::PrintBoard() {
 	for (int i = 0; i < 3; i++) {
@@ -59,11 +54,11 @@ bool Board::CheckMove(int move1, int move2, char piece) {
 // Checks to see if either the player or the ai won the game. Checks horizontally for wins, checks vertically
 char Board::GameWon(char playerPiece, char aiPiece) {
 
-	if (CheckHorizontal() == playerPiece || CheckVerticle() == playerPiece || CheckLeftDiagnol() == playerPiece || CheckRightDiagnol() == playerPiece) {
+	if (CheckAll(playerPiece, aiPiece) == playerPiece) {
 		cout << "You won! I should have made the AI harder." << endl;
 		return true;
 	}
-	else if (CheckHorizontal() == aiPiece || CheckVerticle() == aiPiece || CheckLeftDiagnol() == aiPiece || CheckRightDiagnol() == aiPiece) {
+	else if (CheckAll(playerPiece, aiPiece) == aiPiece) {
 		cout << "The ai won. Try harder next time." << endl;
 		return true;
 	}
@@ -85,7 +80,6 @@ string Board::GetBoard() {
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			fullBoard += board[i][j];
-			fullBoard += ',';
 		}
 	}
 
@@ -96,6 +90,19 @@ string Board::GetBoard() {
 void Board::AddMove(int move1, int move2, char piece) {
 	board[move1][move2] = tolower(piece);
 	PrintBoard();
+}
+
+// Checks all of the directions for a win here and will piece whatever result to the main function to output who won if anyone
+char Board::CheckAll(char playerPiece, char aiPiece) {
+	if (CheckHorizontal() == playerPiece || CheckVerticle() == playerPiece || CheckLeftDiagnol() == playerPiece || CheckRightDiagnol() == playerPiece) {
+		return playerPiece;
+	}
+	else if (CheckHorizontal() == aiPiece || CheckVerticle() == aiPiece || CheckLeftDiagnol() == aiPiece || CheckRightDiagnol() == aiPiece) {
+		return aiPiece;
+	}
+	else {
+		return 'a';
+	}
 }
 
 char Board::CheckHorizontal() {

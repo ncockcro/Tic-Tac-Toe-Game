@@ -5,41 +5,16 @@ Date: August 12, 2018
 
 */
 #include "AI.h"
-#include "Player.h"
-#include <iostream>
-#include <string>
-#include <sstream>
-
-using namespace std;
-
-
-// Default constructor
-AI::AI()
-{
-}
-
-// Default destructor
-AI::~AI()
-{
-}
 
 // Creates a piece for the ai to use. Is dependent upon which piece the user picked
-void AI::CreatePiece(Player &p) {
-	if (p.GetPiece() == 'x') {
+void AI::CreatePiece(char playerPiece) {
+	if (playerPiece == 'x') {
 		AIPiece = 'o';
 		enemysPiece = 'x';
 	}
 	else {
 		AIPiece = 'x';
 		enemysPiece = 'o';
-	}
-}
-
-void AI::ReadBoard(char **arr) {
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			cout << arr[i][j] << endl;
-		}
 	}
 }
 
@@ -75,25 +50,16 @@ void AI::MakeMove(string board) {
 // Function for taking the string format of the board that the board class sent and deconstructs it back into a 2d array to be used for the 
 // ai to make its moves
 void AI::MakeAIBoard(string board) {
-	
-	istringstream ss(board);
-	string token;
 
-	int iCount = 0;
-	int jCount = 0;
-	int count = 0;
+	int letterCount = 0;
 
-	// Spitting on commas and every character in there is an element of the board 2d array
-	while (getline(ss, token, ',')) {
-		AIBoard[iCount][jCount] = token[0];
-		count++;
-		jCount++;
-
-		if (count == 3) {
-			iCount++;
-			jCount = 0;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			AIBoard[i][j] = board[letterCount];
+			letterCount++;
 		}
 	}
+	
 }
 
 // Returns the ai piece
@@ -147,7 +113,7 @@ bool AI::CheckVerticle() {
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			if (AIBoard[j][i] == enemysPiece || AIBoard[i][j] == AIPiece) {
+			if (AIBoard[j][i] == enemysPiece || AIBoard[j][i] == AIPiece) {
 				enemyCount++;
 			}
 			if (AIBoard[j][i] == '*') {
@@ -220,6 +186,7 @@ bool AI::CheckRightDiagnol() {
 	return false;
 }
 
+// If the ai checks and the player isn't about to win any of its moves, then the ai will try and get 3 in a row
 void AI::EducatedMove() {
 	int emptyCount = 0;
 

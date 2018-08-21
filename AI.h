@@ -10,15 +10,17 @@ will be stored in this class.
 #ifndef AI_H
 #define AI_H
 
-#include "Player.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
 class AI
 {
 public:
 	// Pubic functions
-	AI();
-	~AI();
-	void CreatePiece(Player &p);
-	void ReadBoard(char **arr);
+	void CreatePiece(char playerPiece);
 	void MakeMove(string board);
 	void MakeAIBoard(string board);
 
