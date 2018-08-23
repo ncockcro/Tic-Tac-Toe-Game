@@ -13,6 +13,8 @@ will be stored in this class.
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -20,6 +22,7 @@ class AI
 {
 public:
 	// Pubic functions
+	AI();
 	void CreatePiece(char playerPiece);
 	void MakeMove(string board);
 	void MakeAIBoard(string board);
@@ -36,13 +39,15 @@ private:
 	char AIBoard[3][3];
 	char currentMove1;
 	char currentMove2;
+	int lastEducatedMove;
 
 	// Private functions
 	bool CheckHorizontal();
 	bool CheckVerticle();
 	bool CheckLeftDiagnol();
 	bool CheckRightDiagnol();
-	void EducatedMove();
+	bool MiddleSpot();
+	int EducatedMove();
 
 };
 

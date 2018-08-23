@@ -6,6 +6,10 @@ Date: August 12, 2018
 */
 #include "AI.h"
 
+AI::AI() {
+	lastEducatedMove = 0;
+}
+
 // Creates a piece for the ai to use. Is dependent upon which piece the user picked
 void AI::CreatePiece(char playerPiece) {
 	if (playerPiece == 'x') {
@@ -42,9 +46,12 @@ void AI::MakeMove(string board) {
 	if (CheckRightDiagnol()) {
 		return;
 	}
+	if (MiddleSpot()) {
+		return;
+	}
 
 	// If the player isn't about to win, the ai will try to get three in a row
-	EducatedMove();
+	lastEducatedMove = EducatedMove();
 }
 
 // Function for taking the string format of the board that the board class sent and deconstructs it back into a 2d array to be used for the 
@@ -82,24 +89,29 @@ bool AI::CheckHorizontal() {
 	int enemyCount = 0;
 	int iPosition;
 	int jPosition;
+	bool computerPiece = false;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			if (AIBoard[i][j] == enemysPiece || AIBoard[i][j] == AIPiece) {
+			if (AIBoard[i][j] == enemysPiece) {
 				enemyCount++;
 			}
 			if (AIBoard[i][j] == '*') {
 				iPosition = i;
 				jPosition = j;
 			}
+			if (AIBoard[i][j] == AIPiece) {
+				computerPiece = true;
+			}
 		}
 
-		if (enemyCount == 2) {
+		if (enemyCount == 2 && computerPiece != true) {
 			currentMove1 = iPosition;
 			currentMove2 = jPosition;
 			return true;
 		}
 		enemyCount = 0;
+		computerPiece = false;
 	}
 
 	return false;
@@ -110,24 +122,29 @@ bool AI::CheckVerticle() {
 	int enemyCount = 0;
 	int iPosition;
 	int jPosition;
+	bool computerPiece = false;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			if (AIBoard[j][i] == enemysPiece || AIBoard[j][i] == AIPiece) {
+			if (AIBoard[j][i] == enemysPiece) {
 				enemyCount++;
 			}
 			if (AIBoard[j][i] == '*') {
 				iPosition = i;
 				jPosition = j;
 			}
+			if (AIBoard[j][i] == AIPiece) {
+				computerPiece = true;
+			}
 		}
 
-		if (enemyCount == 2) {
+		if (enemyCount == 2 && computerPiece != true) {
 			currentMove1 = jPosition;
 			currentMove2 = iPosition;
 			return true;
 		}
 		enemyCount = 0;
+		computerPiece = false;
 	}
 
 	return false;
@@ -139,19 +156,23 @@ bool AI::CheckLeftDiagnol() {
 	int iPosition;
 	int jPosition;
 	int secondI = 0;
+	bool computerPiece = false;
 
 	for (int i = 0; i < 3; i++) {
-		if (AIBoard[i][secondI] == enemysPiece || AIBoard[i][secondI] == AIPiece) {
+		if (AIBoard[i][secondI] == enemysPiece) {
 			enemyCount++;
 		}
 		if (AIBoard[i][secondI] == '*') {
 			iPosition = i;
 			jPosition = secondI;
 		}
+		if (AIBoard[i][secondI] == AIPiece) {
+			computerPiece = true;
+		}
 		secondI++;
 	}
 
-	if (enemyCount == 2) {
+	if (enemyCount == 2 && computerPiece != true) {
 		currentMove1 = jPosition;
 		currentMove2 = iPosition;
 		return true;
@@ -166,6 +187,7 @@ bool AI::CheckRightDiagnol() {
 	int iPosition;
 	int jPosition;
 	int secondI = 2;
+	bool computerPiece = false;
 
 	for (int i = 0; i < 3; i++) {
 		if (AIBoard[i][secondI] == enemysPiece) {
@@ -175,70 +197,121 @@ bool AI::CheckRightDiagnol() {
 			iPosition = i;
 			jPosition = secondI;
 		}
-		if (enemyCount == 2) {
-			currentMove1 = iPosition;
-			currentMove2 = jPosition;
-			return true;
+		if (AIBoard[i][secondI] == AIPiece) {
+			computerPiece = true;
 		}
 		secondI--;
 	}
 
+	if (enemyCount == 2 && computerPiece != true) {
+		currentMove1 = iPosition;
+		currentMove2 = jPosition;
+		return true;
+	}
+	return false;
+}
+
+bool AI::MiddleSpot() {
+	if (AIBoard[1][1] == '*') {
+		currentMove1 = 1;
+		currentMove2 = 1;
+		return true;
+	}
 	return false;
 }
 
 // If the ai checks and the player isn't about to win any of its moves, then the ai will try and get 3 in a row
-void AI::EducatedMove() {
+int AI::EducatedMove() {
 	int emptyCount = 0;
+	int secondI = 0;
+	srand(time(NULL));
 
-	// Making a horizontal move
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			if (AIBoard[i][j] == '*') {
+	if (lastEducatedMove == 0) {
+		lastEducatedMove = rand() % 4 + 1;
+	}
+
+	if (lastEducatedMove == 1) {
+		// Making a horizontal move
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (AIBoard[i][j] == '*') {
+					emptyCount++;
+					currentMove1 = i;
+					currentMove2 = j;
+				}
+				if (AIBoard[i][j] == AIPiece) {
+					emptyCount++;
+				}
+			}
+
+			if (emptyCount == 3) {
+				return 1;
+			}
+			emptyCount = 0;
+		}
+		return 0;
+	}
+
+	if (lastEducatedMove == 2) {
+		// Making a verticle move
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (AIBoard[j][i] == '*') {
+					emptyCount++;
+					currentMove1 = j;
+					currentMove2 = i;
+				}
+				if (AIBoard[j][i] == AIPiece) {
+					emptyCount++;
+				}
+			}
+
+			if (emptyCount == 3) {
+				return 2;
+			}
+			emptyCount = 0;
+		}
+		return 0;
+	}
+
+	if (lastEducatedMove == 3) {
+		// Making a left diagnol move
+		secondI = 0;
+		emptyCount = 0;
+		for (int i = 0; i < 3; i++) {
+			if (AIBoard[i][secondI] == '*') {
 				emptyCount++;
 				currentMove1 = i;
-				currentMove2 = j;
+				currentMove2 = secondI;
 			}
-			if (AIBoard[i][j] == AIPiece) {
+			if (AIBoard[i][secondI] == AIPiece) {
 				emptyCount++;
 			}
+			secondI++;
 		}
-
 		if (emptyCount == 3) {
-			return;
+			return 3;
 		}
-		emptyCount = 0;
+		return 0;
 	}
 
-	// Making a verticle move
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			if (AIBoard[j][i] == '*') {
-				emptyCount++;
-				currentMove1 = j;
-				currentMove2 = i;
-			}
-			if (AIBoard[j][i] == AIPiece) {
-				emptyCount++;
-			}
-		}
-
-		if (emptyCount == 3) {
-			return;
-		}
+	if (lastEducatedMove == 4) {
+		secondI = 2;
 		emptyCount = 0;
-	}
-
-	// Making a left diagnol move
-	int secondI = 2;
-	for (int i = 0; i < 3; i++) {
-		if (AIBoard[i][secondI] == '*') {
-			emptyCount++;
-			currentMove1 = i;
-			currentMove2 = secondI;
+		for (int i = 0; i < 3; i++) {
+			if (AIBoard[i][secondI] == '*') {
+				emptyCount++;
+				currentMove1 = i;
+				currentMove2 = secondI;
+			}
+			if (AIBoard[i][secondI] == AIPiece) {
+				emptyCount++;
+			}
+			secondI--;
 		}
-		if (AIBoard[i][secondI] == AIPiece) {
-			emptyCount++;
+		if (emptyCount == 3) {
+			return 4;
 		}
-		secondI++;
+		return 0;
 	}
 }
